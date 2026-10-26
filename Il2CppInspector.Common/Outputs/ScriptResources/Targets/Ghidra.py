@@ -1,7 +1,7 @@
 ﻿# Ghidra-specific implementation
-from ghidra.app.cmd.function import ApplyFunctionSignatureCmd
+from ghidra.app.cmd.function import ApplyFunctionSignatureCmd, FunctionRenameOption
 from ghidra.app.util.cparser.C import CParserUtils
-from ghidra.program.model.data import ArrayDataType
+from ghidra.program.model.data import ArrayDataType, DataTypeConflictHandler
 from ghidra.program.model.symbol import (
     SourceType,
     RefType,
@@ -173,7 +173,13 @@ class GhidraDisassemblerInterface(BaseDisassemblerInterface):
             type,
         )
         ApplyFunctionSignatureCmd(
-            self._to_address(address), typeSig, SourceType.USER_DEFINED, False, True
+            self._to_address(address),
+            typeSig,
+            SourceType.USER_DEFINED,
+            False,
+            False,
+            DataTypeConflictHandler.DEFAULT_HANDLER,
+            FunctionRenameOption.RENAME
         ).applyTo(currentProgram, monitor)
 
     def set_data_comment(self, address: int, cmt: str):
